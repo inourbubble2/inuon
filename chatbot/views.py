@@ -1,3 +1,5 @@
+from django.views.decorators.csrf import csrf_exempt
+
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse 
 from django.core import serializers
@@ -36,25 +38,28 @@ def ask(request):
 
 
 # crawl(): POST
-# JSON 형식으로 객체를 받는다
+# HTTP의 Body에 데이터를 받는다
 # 객체는 Key:Value의 딕셔너리
 # {
 #   username: '2018'
 #   password: '1234'
 # } : JSON Object
+@csrf_exempt
 def crawl(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        # data = json.loads(request.body)
 
-        # Parameter가 정상적인지 확인
-        if len(data.keys()) < 2:
-            return HttpResponse('Invalid Parameter', status=400)
-        for value in data.values():
-            if value in '':
-                return HttpResponse('Invalid Parameter', status=400)
+        # # Parameter가 정상적인지 확인
+        # if len(data.keys()) < 2:
+        #     return HttpResponse('Invalid Parameter', status=400)
+        # for value in data.values():
+        #     if value in '':
+        #         return HttpResponse('Invalid Parameter', status=400)
         
-        uname = data['username']
-        pword = data['password']
+        # uname = data['username']
+        # pword = data['password']
+        uname = request.POST.get('username')
+        pword = request.POST.get('password')
 
         c = crawls.Crawl(uname, pword)
         c.login()
@@ -69,9 +74,18 @@ def crawl(request):
         return HttpResponse('Invalid Request Type', status=400)
 
 
-# user(): PUT, PATCH, DELETE
-# TODO: 유저 목록의 입력, 수정, 삭제를 담당하는 메소드 작성
+# user(): GET, PUT, PATCH, DELETE
+# TODO: 유저 목록의 조회, 입력, 수정, 삭제를 담당하는 메소드 작성
 def user(request):
+    if request.method == 'GET':
+        pass
+    elif request.method == 'PUT':
+        pass
+    elif request.method == 'PATCH':
+        pass
+    elif request.method == 'DELETE':
+        pass
+    
     return HttpResponse("You can join here.")
 
 
