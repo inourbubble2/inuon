@@ -2,8 +2,6 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from datetime import datetime
-import os
-
 
 class Crawl:
     def __init__(self, id, pw):
@@ -57,15 +55,5 @@ class Crawl:
                         course_code = course.text[len(course.text) - 11:len(course.text) - 1]
                         result.append((year, sem_t, course_name, course_code))
         return result
-
-
-# if __name__ == '__main__':
-#     # print(os.getcwd())
-#     c = Crawl('201802904', 'nayeon2170*')
-#     c.login()
-#     print(c.get_info())
-#     courses = c.get_class()
-#     for c in courses:
-#         print(c)
 
 

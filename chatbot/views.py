@@ -85,7 +85,7 @@ def user(request):
         pass
     elif request.method == 'DELETE':
         pass
-    
+
     return HttpResponse("You can join here.")
 
 

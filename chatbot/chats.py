@@ -4,3 +4,4 @@
 # 답변을 get_response() 마지막에 return하면 됨
 def get_response(uname, content):
     return 'Hello, ' + uname + '. your question was ' + content
+
