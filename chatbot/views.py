@@ -28,10 +28,6 @@ def ask(request):
         if uname == '' or content == '':
             return HttpResponse('Invalid Parameter', 400)
 
-        # 가입된 학번인지 체크
-        if not users.is_valid_id(uname):
-            return HttpResponse('Invalid ID', 400)
-
         res = chats.get_response(uname, content)
 
         return JsonResponse({"res": res},
