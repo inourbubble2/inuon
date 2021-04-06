@@ -1,2 +1,2 @@
 # inuon
-##### This is the project made by students of Incheon National University.
+## This is the server-side application for INU chatbot project called INUON.
