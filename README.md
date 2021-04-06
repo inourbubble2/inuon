@@ -3,10 +3,10 @@
 #### Django, sqlite3, 
 #### Using Selenium, BeautifulSoup4, Pyvirtualdisplay
 
-/chatbot/crawl: Crawling the courses of a student from INU e-learning web.
-/chatbot/ask: Asking a question to the chatbot and retrieve the answer.
-/chatbot/user: Checking a user's status.
-/chatbot/user: Listing a user's course list.
+###### /chatbot/crawl: Crawling the courses of a student from INU e-learning web.
+###### /chatbot/ask: Asking a question to the chatbot and retrieve the answer.
+###### /chatbot/user: Checking a user's status.
+###### /chatbot/user: Listing a user's course list.
 
 
 
