@@ -1,7 +1,8 @@
 # inuon
 ## This is the server-side application for INU chatbot project called INU ON.
-#### Django, sqlite3, 
-#### Using Selenium, BeautifulSoup4, Pyvirtualdisplay
+#### Used skill: Django, sqlite3
+#### Used package: Selenium, BeautifulSoup4, Pyvirtualdisplay
+#### Environment: Ubuntu 18.0.4
 
 ###### /chatbot/crawl: Crawling the courses of a student from INU e-learning web.
 ###### /chatbot/ask: Asking a question to the chatbot and retrieve the answer.
