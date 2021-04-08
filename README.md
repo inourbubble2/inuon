@@ -4,10 +4,10 @@
 #### Used package: Selenium, BeautifulSoup4, Pyvirtualdisplay
 #### Environment: Ubuntu 18.0.4
 
-###### /chatbot/crawl: Crawling the courses of a student from INU e-learning web.
-###### /chatbot/ask: Asking a question to the chatbot and retrieve the answer.
-###### /chatbot/user: Checking a user's status.
-###### /chatbot/usercourse: Listing a user's course list.
+###### POST /chatbot/crawl: Crawling the courses of a student from INU e-learning web.
+###### GET /chatbot/ask: Asking a question to the chatbot and retrieve the answer.
+###### GET /chatbot/user: Checking a user's status.
+###### GET /chatbot/usercourse: Listing a user's course list.
 
 
 
