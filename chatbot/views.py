@@ -15,19 +15,20 @@ logger = logging.getLogger(__name__)
 # return: 해당 유저의 정보를 기반으로 질문의 답을 반환
 def answer(request):
     if request.method == 'GET':  # Get 방식만 허용됨
-        uname = request.GET.get('username', '')
-        content = request.GET.get('content', '')
+        uname = request.GET.get('username', default='')
+        content = request.GET.get('content', default='')
 
-        # Parameter가 정상적인지 확인
-        if uname == '' or content == '':
-            return HttpResponse('Invalid Parameter', 400)
+        if users.select_user_by_id(uname):
+            if content == '':
+                return HttpResponse("The question is empty.", status=400)
+            else:
+                res = chats.get_response(uname, content)
 
-        res = chats.get_response(uname, content)
-
-        return JsonResponse({"res": res},
-                            status=200,
-                            json_dumps_params={"ensure_ascii": False})
-
+                return JsonResponse({"res": res},
+                                    status=200,
+                                    json_dumps_params={"ensure_ascii": False})
+        else:
+            return HttpResponse("User does not exist.", status="400")
     else:
         return HttpResponse('Invalid Request Type', status=400)
 
@@ -37,10 +38,10 @@ def answer(request):
 # return: 해당 유저의 이름, 학과 정보를 반환
 def user(request):
     if request.method == 'GET':
-        uname = request.GET.get('username', '')
+        uname = request.GET.get('username', default='')
         u = users.select_user_by_id(uname)
 
-        if u is not False:
+        if u:
             return JsonResponse({"user": u.user_id,
                                  "name": u.user_name,
                                  "dept": u.user_dept},
@@ -56,8 +57,6 @@ def user(request):
     elif request.method == 'DELETE':
         pass
 
-    return HttpResponse("You can join here.")
-
 
 # GET /usercourse?username=
 # -> parameter: username
@@ -68,12 +67,12 @@ def user(request):
 @csrf_exempt
 def usercourse(request):
     if request.method == 'GET':
-        uname = request.GET.get('username', '')
+        uname = request.GET.get('username', default='')
         course = []
         u = users.select_user_by_id(uname)
         ucs = users.select_usercourse_by_id(uname)
 
-        if ucs is not False:
+        if u:
             for uc in ucs:
                 course.append([uc.course_id,
                                uc.course_title, uc.course_dept,
@@ -89,41 +88,28 @@ def usercourse(request):
         else:
             return HttpResponse("User does not exist.", status="400")
     elif request.method == 'POST':
-        uname = request.POST.get('username')
-        pword = request.POST.get('password')
+        uname = request.POST.get('username', default='')
+        pword = request.POST.get('password', default='')
 
-        # Parameter가 정상적인지 확인
-        if uname == '' or pword == '':
-            return HttpResponse('Invalid Parameter', 400)
-
-        if uname is None or pword is None:
-            return HttpResponse('Invalid Parameter', 400)
+        if users.select_user_by_id(uname):
+            return HttpResponse('The user already exists.', 400)
 
         c = crawls.Crawl(uname, pword)
-        c.login()
+        if c.login():  # 로그인 성공
+            try:
+                name, dept = c.get_info()  # {"name": name.text, "dept": dept.text}
+                course = c.get_class()  # [[year, sem_t, course_name, course_code]]
 
-        try:
-            # TODO : 데이터베이스 설계 완료 시, 크롤링한 데이터는 저장만 하고
-            #        Response는 200/400으로 단순하게 성공 여부만 알려줄 것
-            name, dept = c.get_info()  # {"name": name.text, "dept": dept.text}
-            course = c.get_class()  # [[year, sem_t, course_name, course_code]]
+                users.insert_user(uname, name, dept)
+                users.insert_course(uname, course)
 
-            users.insert_user(uname, name, dept)
-            users.insert_course(uname, course)
-
-            return JsonResponse({"name": name, "dept": dept, "course": course},
-                                status=200,
-                                json_dumps_params={"ensure_ascii": False})
-        except Exception:  # 크롤링 중 에러가 발생한다면 로그인 정보가 틀린 것
+                return JsonResponse({"name": name, "dept": dept, "course": course},
+                                    status=200,
+                                    json_dumps_params={"ensure_ascii": False})
+            except Exception:
+                return HttpResponse("Something went wrong.", status=400)
+        else:  # 로그인 실패
             return HttpResponse("Login failed.", status=400)
-    elif request.method == 'PUT':
-        pass
-    elif request.method == 'PATCH':
-        pass
-    elif request.method == 'DELETE':
-        pass
-
-    return HttpResponse('You can manage course here.')
 
 
 # calendar(): GET, PUT, PATCH, DELETE

@@ -31,7 +31,6 @@ class Crawl:
 
     def login(self):
         self.driver.implicitly_wait(3)
-
         self.logger.info("Start to login to cyber.inu.ac.kr")
         self.driver.get('https://cyber.inu.ac.kr/login.php')
         self.driver.find_element_by_id('input-username').send_keys(self.uname)
@@ -39,6 +38,7 @@ class Crawl:
         self.driver.find_element_by_xpath(
             '//*[@id="region-main"]/div/div/div/div[1]/div[1]/div[2]/form/div[2]/input').click()
 
+        self.driver.implicitly_wait(3)
         if self.driver.current_url == 'https://cyber.inu.ac.kr/login.php':
             self.logger.error("Login failed")
             return False
