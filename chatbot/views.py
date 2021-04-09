@@ -10,16 +10,10 @@ from . import chats, crawls, users
 logger = logging.getLogger(__name__)
 
 
-# ask(): GET
-# example query: /chatbot/ask?id=201800000&content=수강%20신청%20언제야?
-# request = {
-#   'username': '201800000'
-#   'content': '수강 신청 언제야?'
-# }
-# return {
-# "res": '수강 신청은 X월 X일 입니다.'
-# } : JSON Object
-def ask(request):
+# GET /answer
+# parameter: username, content
+# return: 해당 유저의 정보를 기반으로 질문의 답을 반환
+def answer(request):
     if request.method == 'GET':  # Get 방식만 허용됨
         uname = request.GET.get('username', '')
         content = request.GET.get('content', '')
@@ -38,27 +32,63 @@ def ask(request):
         return HttpResponse('Invalid Request Type', status=400)
 
 
-# crawl(): POST
-# HTTP의 Body에 데이터를 받는다
-# 객체는 Key:Value의 딕셔너리
-# {
-#   username: '2018'
-#   password: '1234'
-# } : JSON Object
+# GET /user
+# parameter: username
+# return: 해당 유저의 이름, 학과 정보를 반환
+def user(request):
+    if request.method == 'GET':
+        uname = request.GET.get('username', '')
+        u = users.select_user_by_id(uname)
+
+        if u is not False:
+            return JsonResponse({"user": u.user_id,
+                                 "name": u.user_name,
+                                 "dept": u.user_dept},
+                                status=200,
+                                json_dumps_params={"ensure_ascii": False})
+        else:
+            return HttpResponse("User does not exist.", status="400")
+
+    elif request.method == 'PUT':
+        pass
+    elif request.method == 'PATCH':
+        pass
+    elif request.method == 'DELETE':
+        pass
+
+    return HttpResponse("You can join here.")
+
+
+# GET /usercourse?username=
+# -> parameter: username
+# -> return: 이미 저장된 user의 강의 목록
+# POST /usercourse
+# -> Parameter: Http Request의 Body에 username과 password를 저장하여 전송함)
+# -> return: 해당 user의 강의 목록 크롤링하여 저장한 후 반환
 @csrf_exempt
-def crawl(request):
-    if request.method == 'POST':
-        # data = json.loads(request.body)
+def usercourse(request):
+    if request.method == 'GET':
+        uname = request.GET.get('username', '')
+        course = []
+        u = users.select_user_by_id(uname)
+        ucs = users.select_usercourse_by_id(uname)
 
-        # # Parameter가 정상적인지 확인
-        # if len(data.keys()) < 2:
-        #     return HttpResponse('Invalid Parameter', status=400)
-        # for value in data.values():
-        #     if value in '':
-        #         return HttpResponse('Invalid Parameter', status=400)
+        if ucs is not False:
+            for uc in ucs:
+                course.append([uc.course_id,
+                               uc.course_title, uc.course_dept,
+                               uc.course_year, uc.course_sems,
+                               uc.course_credit, uc.course_grade])
 
-        # uname = data['username']
-        # pword = data['password']
+            return JsonResponse({"user": uname,
+                                 "name": u.user_name,
+                                 "dept": u.user_dept,
+                                 "course": course},
+                                status=200,
+                                json_dumps_params={"ensure_ascii": False})
+        else:
+            return HttpResponse("User does not exist.", status="400")
+    elif request.method == 'POST':
         uname = request.POST.get('username')
         pword = request.POST.get('password')
 
@@ -86,60 +116,6 @@ def crawl(request):
                                 json_dumps_params={"ensure_ascii": False})
         except Exception:  # 크롤링 중 에러가 발생한다면 로그인 정보가 틀린 것
             return HttpResponse("Login failed.", status=400)
-    else:
-        return HttpResponse('Invalid Request Type', status=400)
-
-
-# user(): GET, PUT, PATCH, DELETE
-# TODO: 유저 목록의 조회, 입력, 수정, 삭제를 담당하는 메소드 작성
-def user(request):
-    if request.method == 'GET':
-        uname = request.GET.get('username', '')
-        u = users.select_user_by_id(uname)
-
-        if u is not False:
-            return JsonResponse({"user": u.user_id,
-                                 "name": u.user_name,
-                                 "dept": u.user_dept},
-                                status=200,
-                                json_dumps_params={"ensure_ascii": False})
-        else:
-            return HttpResponse("User does not exist.", status="400")
-
-    elif request.method == 'PUT':
-        pass
-    elif request.method == 'PATCH':
-        pass
-    elif request.method == 'DELETE':
-        pass
-
-    return HttpResponse("You can join here.")
-
-
-# course(): GET, PUT, PATCH, DELETE
-# TODO : 강의 목록의 조회, 입력, 수정, 삭제를 담당하는 메소드 작성
-def usercourse(request):
-    if request.method == 'GET':
-        uname = request.GET.get('username', '')
-        course = []
-        u = users.select_user_by_id(uname)
-        ucs = users.select_usercourse_by_id(uname)
-
-        if ucs is not False:
-            for uc in ucs:
-                course.append([uc.course_id,
-                               uc.course_title, uc.course_dept,
-                               uc.course_year, uc.course_sems,
-                               uc.course_credit, uc.course_grade])
-
-            return JsonResponse({"user": uname,
-                                 "name": u.user_name,
-                                 "dept": u.user_dept,
-                                 "course": course},
-                                status=200,
-                                json_dumps_params={"ensure_ascii": False})
-        else:
-            return HttpResponse("User does not exist.", status="400")
     elif request.method == 'PUT':
         pass
     elif request.method == 'PATCH':
