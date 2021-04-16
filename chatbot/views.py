@@ -17,12 +17,11 @@ def answer(request):
     if request.method == 'GET':  # Get 방식만 허용됨
         uname = request.GET.get('username', default='')
         content = request.GET.get('content', default='')
-
         if users.select_user_by_id(uname):
             if content == '':
                 return HttpResponse("The question is empty.", status=400)
             else:
-                res = chats.get_response(uname, content)
+                res = chats.get_response(content)
 
                 return JsonResponse({"res": res},
                                     status=200,
