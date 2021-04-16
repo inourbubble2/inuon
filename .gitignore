@@ -1,2 +1,4 @@
-chromedriver
+*.exe
+*.json
 .vscode
+scerets.json
