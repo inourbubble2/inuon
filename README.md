@@ -7,6 +7,6 @@
 ###### GET /chatbot/answer: Asking a question to the chatbot and retrieve the answer.
 ###### GET /chatbot/user: Checking a user's status.
 ###### GET /chatbot/usercourse: Listing a user's course list.
-###### POST /cahtbot/usercourse: Crawling the courses of a student from INU e-learning web.
+###### POST /chatbot/usercourse: Crawling the courses of a student from INU e-learning web.
 
 
