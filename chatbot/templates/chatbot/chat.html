@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title> INU ON </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+ 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="/static/responses.js"></script>
+  <script src="/static/chat.js"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>INU ON</h1>
+    </div>
+    <div class="chat-container">      
+      <!--mainmenu-->
+      <ul class="mainMenu">
+        <li>
+          <a onclick="getHardResponse('공지사항 알려주세요!'); return false;">
+            <div class="menu1"></div>
+            공지사항
+          </a>
+          <a onclick="buttonSendText('학사일정 알려주세요!'); return false;">
+            <div class="menu1"></div>
+            학사일정
+          </a>
+          <a onclick="buttonSendText('수강신청이 언제인가요?'); return false;">
+            <div class="menu1"></div>
+            수강신청
+          </a>
+        </li>
+        <li>
+          <a onclick="buttonSendText('이수현황 보여주세요!'); return false;">
+            <div class="menu1"></div>
+            이수현황
+          </a>
+          <a onclick="buttonSendText('휴학복학일정 알려주세요!'); return false;">
+            <div class="menu1"></div>
+            휴학복학
+          </a><a onclick="buttonSendText('졸업요건이 어떻게 되나요?'); return false;">
+            <div class="menu1"></div>
+            졸업안내
+          </a>
+        </li>
+      </ul>
+
+      <!---Message-->
+      <div id="chatbox"> 
+        <p id="botStarterMessage" ><span></span></p> 
+      </div>
+      
+    </div>
+  </div>
+    <!--user input-->
+    <div class="chat-input-box">
+      <div id="userInput">
+        <input type="text" id="textInput" class="input-box" name="msg" placeholder="Message...">
+        <p></p>
+      </div>
+      <div class="chat-bar-icons">
+        <i id="chat-icon" style="color: #002964 ;" class="fa fa-fw fa-send" 
+        onclick="sendButton()"></i>
+      </div>     
+    
+
+    <div id="chat-bar-buttom">
+      <p></p>
+    </div>
+    
+</body>
+</html>

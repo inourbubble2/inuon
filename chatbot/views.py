@@ -4,30 +4,34 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.http import HttpResponse, JsonResponse
 
-from . import chats, crawls, users
+from django.template import loader
 
+from . import chats, crawls, users
 
 logger = logging.getLogger(__name__)
 
+# return chat.html
+def chat(request):
+    template = loader.get_template('chatbot/chat.html')
+    context = {
+    }
+    return HttpResponse(template.render(context, request))
 
 # GET /answer
 # parameter: username, content
 # return: 해당 유저의 정보를 기반으로 질문의 답을 반환
 def answer(request):
     if request.method == 'GET':  # Get 방식만 허용됨
-        uname = request.GET.get('username', default='')
+        #uname = request.GET.get('username', default='')
         content = request.GET.get('content', default='')
-        if users.select_user_by_id(uname):
-            if content == '':
-                return HttpResponse("The question is empty.", status=400)
-            else:
-                res = chats.get_response(content)
-
-                return JsonResponse({"res": res},
-                                    status=200,
-                                    json_dumps_params={"ensure_ascii": False})
+        ##if users.select_user_by_id(uname):
+        if content == '':
+            return HttpResponse("The question is empty.", status=400)
         else:
-            return HttpResponse("User does not exist.", status="400")
+            res = chats.get_response(content)
+            return JsonResponse({"res": res},status=200,json_dumps_params={"ensure_ascii": False})
+        #else:
+            #return HttpResponse("User does not exist.", status="400")
     else:
         return HttpResponse('Invalid Request Type', status=400)
 
